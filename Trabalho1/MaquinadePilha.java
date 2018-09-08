@@ -16,22 +16,22 @@ private BufferedReader arquivo;
 private String linha;
 
 public static void main(String[] args) throws IOException {
- 	MaquinadePilha stack = new MaquinadePilha(args[0]);
+   MaquinadePilha stack = new MaquinadePilha(args[0]);
 }
 
 MaquinadePilha(String nomeArq) throws IOException{
-    try{
-      arquivo = new BufferedReader(new FileReader(nomeArq));
-      Scanner leitura = new Scanner(arquivo);
+   try{
+     arquivo = new BufferedReader(new FileReader(nomeArq));
+     Scanner leitura = new Scanner(arquivo);
       while((linha = arquivo.readLine()) != null){
-       	if(linha.contains("PUSH ")){
+        if(linha.contains("PUSH ")){
            linha = linha.replaceAll("PUSH ","");
            pilha.push(Integer.valueOf(linha));
         }
         if(linha.contains("SUM")){
            sum();
         }
-  		  if(linha.contains("SUB")){
+        if(linha.contains("SUB")){
            sub();
         }
         if(linha.contains("MULT")){
@@ -41,13 +41,13 @@ MaquinadePilha(String nomeArq) throws IOException{
            div();
         }
         if(linha.contains("PRINT")){
-           print();
+          print();
         }
       }
      }catch(FileNotFoundException e){
-       System.out.println("Arquivo não encontrado");
+        System.out.println("Arquivo não encontrado");
      }
-     arquivo.close();
+        arquivo.close();
 }
 
 void print(){
