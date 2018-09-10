@@ -25,7 +25,7 @@ MaquinadePilha(String nomeArq) throws IOException{
      Scanner leitura = new Scanner(arquivo);
       while((linha = arquivo.readLine()) != null){
         if(linha.contains("PUSH ")){
-           linha = linha.replaceAll("PUSH ","");
+           linha = linha.replace("PUSH ","");
            pilha.push(Integer.valueOf(linha));
         }
         if(linha.contains("SUM")){
