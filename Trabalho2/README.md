@@ -5,6 +5,6 @@ Analisador léxico para a linguagem MiniJava
 Compilação:
 > flex l1.l
 
-> gcc lex.yy.c -o lex
+> gcc lex.yy.c 
 
-> ./lex
+> ./a.out
