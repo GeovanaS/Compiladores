@@ -11,4 +11,5 @@ Compilação:
 
 
 > ./a.out < teste.txt
+
 > ./a.out < teste2.txt
