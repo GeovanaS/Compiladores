@@ -1,3 +1,3 @@
-﻿Trabalho 2 
+﻿# Trabalho 2 
 
 Analisador léxico para a linguagem MiniJava 
