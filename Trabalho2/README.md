@@ -8,3 +8,5 @@ Compilação:
 > gcc lex.yy.c 
 
 > ./a.out
+
+> ./a.out < teste.txt
