@@ -15,7 +15,7 @@ BOOL "true"|"false"
 PONTO "."
 EXCLAMACAO "!"
 ENDLINE			.
-COMENTARIO "/*"({LETRA}|{LETRA})*"*/"|"//"{ENDLINE}*
+COMENTARIO "/*"({LETRA})*"*/"|"//"{ENDLINE}*
 EOF "EOF"
 ID	{LETRA}({LETRA}|{DIGITO})*	
 
