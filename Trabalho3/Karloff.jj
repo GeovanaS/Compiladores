@@ -25,6 +25,24 @@ TOKEN :
   <MAIN: "main">
 | <ACHAVES: "{">
 | <FCHAVES: "}">
+| <NVAR: "newVar">
+| <PVIRG: ";">
+| <VIRG: ",">
+| <APAR: "(">
+| <FPAR: ")">
+| <INT: "int">
+| <BOOL: "bool">
+| <IF: "if">
+| <THEN: "then">
+| <TRUE: "true">
+| <FALSE: "false">
+| <WHILE: "while">
+| <REPEAT: "repeat">
+| <RETURN: "return">
+| <UNTIL: "until">
+| <SO: "System.output">
+| <ATRIB: "=">
+| <FUNC: "func">
 | <VOID: "void">
 }
 
@@ -32,10 +50,9 @@ TOKEN :
 {
  <OP: ("+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==")>
 |< ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+|< DIGITOS:(["0"-"9"]) >
 
 }
-
-
 
 
 void Karloff () :
@@ -47,6 +64,48 @@ void Karloff () :
   <EOF> 
 }
 	
+void VarDecl(): {}
+{
+   (<NVAR> Tipo() <ID> <PVIRG>)*
+}
+
+void Exp(){}
+{
+	<APAR> Exp() <OP> Exp <FPAR> | Fator()
+}
+
+void SeqComandos(): {}
+{
+   (Comando())*	
+}
+
+void Comando(): {}
+{
+	<ID> <ATRIB> 
+}
+
+voif Func(): {}
+{
+   (<FUNC> Tipo() <ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl()  )
+}
+
+void ListaArg(): {}
+{
+	Tipo() <ID> ListaArg1()
+}
+
+void ListaArg1(){}
+{
+	(<VIRG> Tipo() <ID> ListaArg1())?
+}
+
+
+void Tipo(): {}
+{
+   (<INT>|<BOOL>)
+}
+
+
 
 void Main ():
 {}
