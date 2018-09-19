@@ -5,7 +5,7 @@ public class Karloff {
   public static void main(String args[]) throws ParseException,IOException {
     
     Karloff parser = new Karloff(new FileInputStream(args[0]));
-    parser.Lugosi();
+    parser.Karloff();
   }
 
 }
