@@ -1,0 +1,65 @@
+PARSER_BEGIN(Karloff)
+import java.io.*;
+public class Karloff {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+    Karloff parser = new Karloff(new FileInputStream(args[0]));
+    parser.Lugosi();
+  }
+
+}
+
+PARSER_END(Karloff)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  <MAIN: "main">
+| <ACHAVES: "{">
+| <FCHAVES: "}">
+| <VOID: "void">
+}
+
+TOKEN :
+{
+ <OP: ("+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==")>
+|< ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+
+}
+
+
+
+void Karloff () :
+{}
+{ 
+
+  Main() 
+//Func()?
+  <EOF> 
+}
+	
+
+void Main ():
+{}
+{
+ <VOID><MAIN> <ACHAVES> 
+ 
+ // VarDecl()
+ // SeqComandos()
+
+ <FCHAVES>
+
+}
+
+
+
+
+
