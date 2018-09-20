@@ -61,38 +61,38 @@ TOKEN :
 
 void LetraouDigito(): {}
 {
-  (<LETRAS>|<DIGITOS>)*
+   (<LETRAS>|<DIGITOS>)*
 }
 
-void FinalSublinhado():{}
+void FinalSublinhado(): {}
 {
    <SUBL>(LetraouDigito())+ 
 }
 
 void TOKEN_id(): {}
 {
-  <LETRAS> (LetraouDigito())* (FinalSublinhado())*
+   <LETRAS> (LetraouDigito())* (FinalSublinhado())*
 }
 
 void TOKEN_numLiteral(): {}
 {
-  Digitos() FracaoOp() ExpoenteOp()
+   Digitos() FracaoOp() ExpoenteOp()
 }
 
 void Digitos(): {}
 {
-  (<DIGITOS>)+
+   (<DIGITOS>)+
 }
 
 
 void ExpoenteOp(): {}
 {
-  (<E> (<MAIS>|<MENOS>)? Digitos())? 
+   (<E> (<MAIS>|<MENOS>)? Digitos())? 
 }
 
 void FracaoOp(): {}
 {
-  (<PONTO> Digitos())?
+   (<PONTO> Digitos())?
 }
 
 
@@ -132,7 +132,7 @@ void Comando(): {}
 
 void Exp(): {}
 {
-	 <APAR> Exp() <OP> Exp <FPAR> | Fator()
+   <APAR> Exp() <OP> Exp <FPAR> | Fator()
 }
 
 void Fator(): {}
@@ -158,13 +158,13 @@ voif Func(): {}
 
 void ListaArg(): {}
 {
-	 Tipo() <ID> ListaArg1()
+   Tipo() <ID> ListaArg1()
 }
 
 //Utilizado para eliminar recursão a esquerda
-void ListaArg1(){}
+void ListaArg1(): {}
 {
-	  <VIRG> Tipo() <ID> ListaArg1())?
+   <VIRG> Tipo() <ID> ListaArg1())?
 }
 
 
