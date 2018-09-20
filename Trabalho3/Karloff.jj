@@ -69,19 +69,34 @@ void VarDecl(): {}
    (<NVAR> Tipo() <ID> <PVIRG>)*
 }
 
-void Exp(){}
+void Tipo(): {}
 {
-	<APAR> Exp() <OP> Exp <FPAR> | Fator()
+   (<INT>|<BOOL>)
 }
 
 void SeqComandos(): {}
 {
-   (Comando())*	
+   (Comando())* 
 }
 
 void Comando(): {}
 {
-	<ID> <ATRIB> 
+   <ID> <ATRIB> Exp() <PVIRG>
+|  <IF> <APAR> Exp() <FPAR> <THEN> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
+|  <WHILE> <APAR> Exp() <FPAR> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
+|  <REPEAT> <ACHAVES> SeqComandos() <FCHAVES> <UNTIL> <APAR> Exp() <FPAR> <PVIRG>
+|  <RETURN> Exp() <PVIRG>
+|  <SO> <APAR> Exp() <FPAR> <PVIRG>
+}
+
+void Exp(): {}
+{
+	 <APAR> Exp() <OP> Exp <FPAR> | Fator()
+}
+
+void Fator(): {}
+{
+   <ID> | <ID> <APAR> ListaExp() <FPAR> | TOKEN_numliteral() | <FALSE> | <TRUE>
 }
 
 voif Func(): {}
@@ -91,20 +106,13 @@ voif Func(): {}
 
 void ListaArg(): {}
 {
-	Tipo() <ID> ListaArg1()
+	 Tipo() <ID> ListaArg1()
 }
 
 void ListaArg1(){}
 {
-	(<VIRG> Tipo() <ID> ListaArg1())?
+	 (<VIRG> Tipo() <ID> ListaArg1())?
 }
-
-
-void Tipo(): {}
-{
-   (<INT>|<BOOL>)
-}
-
 
 
 void Main ():
