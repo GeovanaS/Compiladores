@@ -42,6 +42,7 @@ TOKEN :
 | <UNTIL: "until">
 | <SO: "System.output">
 | <ATRIB: "=">
+| <SUBL: "_"> 
 | <FUNC: "func">
 | <VOID: "void">
 }
@@ -49,9 +50,49 @@ TOKEN :
 TOKEN :
 {
  <OP: ("+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==")>
-|< ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
-|< DIGITOS:(["0"-"9"]) >
+|<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+|<DIGITOS:(["0"-"9"]) >
+|<LETRAS: ["a"-"z","A"-"Z"]>
+|<PONTO: ".">
+|<E: "E"> 
+|<MAIS: "+">
+|<MENOS: "-">
+}
 
+void LetraouDigito(): {}
+{
+  (<LETRAS>|<DIGITOS>)*
+}
+
+void FinalSublinhado():{}
+{
+   <SUBL>(LetraouDigito())+ 
+}
+
+void TOKEN_id(): {}
+{
+  <LETRAS> (LetraouDigito())* (FinalSublinhado())*
+}
+
+void TOKEN_numLiteral(): {}
+{
+  Digitos() FracaoOp() ExpoenteOp()
+}
+
+void Digitos(): {}
+{
+  (<DIGITOS>)+
+}
+
+
+void ExpoenteOp(): {}
+{
+  (<E> (<MAIS>|<MENOS>)? Digitos())? 
+}
+
+void FracaoOp(): {}
+{
+  (<PONTO> Digitos())?
 }
 
 
@@ -99,9 +140,20 @@ void Fator(): {}
    <ID> | <ID> <APAR> ListaExp() <FPAR> | TOKEN_numliteral() | <FALSE> | <TRUE>
 }
 
+void ListaExp(): {}
+{
+   Exp() ListaExp1()  
+}
+
+//Utilizado para eliminar recursão a esquerda
+void ListaExp1(): {}
+{
+   (<VIRG> Exp() ListaExp1())?  
+}
+
 voif Func(): {}
 {
-   (<FUNC> Tipo() <ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl()  )
+   (<FUNC> Tipo() <ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
 }
 
 void ListaArg(): {}
@@ -109,9 +161,10 @@ void ListaArg(): {}
 	 Tipo() <ID> ListaArg1()
 }
 
+//Utilizado para eliminar recursão a esquerda
 void ListaArg1(){}
 {
-	 (<VIRG> Tipo() <ID> ListaArg1())?
+	  <VIRG> Tipo() <ID> ListaArg1())?
 }
 
 
