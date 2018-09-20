@@ -42,7 +42,6 @@ TOKEN :
 | <UNTIL: "until">
 | <SO: "System.output">
 | <ATRIB: "=">
-| <SUBL: "_"> 
 | <FUNC: "func">
 | <VOID: "void">
 }
@@ -54,7 +53,7 @@ TOKEN :
 |<DIGITOS:(["0"-"9"]) >
 |<LETRAS: ["a"-"z","A"-"Z"]>
 |<TOKEN_LITERAL: ((["0"-"9"])+) (("."(["0"-"9"])+)? ("E"("+"|"-")? (["0"-"9"])+))?>
-|<TOKEN_ID: <LETRAS> (<LETRAS>|<DIGITOS>)*(<SUBL>(<LETRAS>|<DIGITOS>)+)*>
+|<TOKEN_ID: <LETRAS> (<LETRAS>|<DIGITOS>)*("_"(<LETRAS>|<DIGITOS>)+)*>
 
 }
 
@@ -135,7 +134,7 @@ void ListaExp1(): {}
    (<VIRG> Exp() ListaExp1())?  
 }
 
-voif Func(): {}
+void Func(): {}
 {
    (<FUNC> Tipo() <ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
 }
