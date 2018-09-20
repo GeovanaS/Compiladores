@@ -3,7 +3,7 @@ main{
     n = 0;
 }
 
-func int soma1(int n){
+func int soma1_(int n){
     while((n<10)){
       n = (n + 1);
       System.output(n);
