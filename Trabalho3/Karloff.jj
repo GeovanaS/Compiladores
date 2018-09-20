@@ -44,6 +44,8 @@ TOKEN :
 | <ATRIB: "=">
 | <FUNC: "func">
 | <VOID: "void">
+|<TOKEN_LITERAL: ((["0"-"9"])+) (("."(["0"-"9"])+)? ("E"("+"|"-")? (["0"-"9"])+))?>
+|<TOKEN_ID: <LETRAS> (<LETRAS>|<DIGITOS>)*((<LETRAS>|<DIGITOS>)+)* ("_")*>
 }
 
 TOKEN :
@@ -52,9 +54,6 @@ TOKEN :
 |<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
 |<DIGITOS:(["0"-"9"]) >
 |<LETRAS: ["a"-"z","A"-"Z"]>
-|<TOKEN_LITERAL: ((["0"-"9"])+) (("."(["0"-"9"])+)? ("E"("+"|"-")? (["0"-"9"])+))?>
-|<TOKEN_ID: <LETRAS> (<LETRAS>|<DIGITOS>)*("_"(<LETRAS>|<DIGITOS>)+)*>
-
 }
 
 void Karloff () :
@@ -80,11 +79,10 @@ void Main ():
  <FCHAVES>
 
 }
-
 	
 void VarDecl(): {}
 {
-   (<NVAR> Tipo() <ID> <PVIRG>)*
+   (<NVAR> Tipo() <TOKEN_ID> <PVIRG>)*
 }
 
 void Tipo(): {}
@@ -99,12 +97,18 @@ void SeqComandos(): {}
 
 void Comando(): {}
 {
-   <ID> <ATRIB> Exp() <PVIRG>
+   <TOKEN_ID> Comando1()
 |  <IF> <APAR> Exp() <FPAR> <THEN> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
 |  <WHILE> <APAR> Exp() <FPAR> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
 |  <REPEAT> <ACHAVES> SeqComandos() <FCHAVES> <UNTIL> <APAR> Exp() <FPAR> <PVIRG>
 |  <RETURN> Exp() <PVIRG>
 |  <SO> <APAR> Exp() <FPAR> <PVIRG>
+}
+
+//Utilizado para eliminar alternativa que comecam com o mesmo simbolo
+void Comando1(): {}
+{
+  <ATRIB>Exp()<PVIRG>|<APAR>(ListaExp())?<FPAR><PVIRG>
 }
 
 void Exp(): {}
@@ -136,18 +140,18 @@ void ListaExp1(): {}
 
 void Func(): {}
 {
-   (<FUNC> Tipo() <ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
+   (<FUNC> Tipo() <TOKEN_ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
 }
 
 void ListaArg(): {}
 {
-   Tipo() <ID> ListaArg1()
+   Tipo() <TOKEN_ID> (ListaArg1())
 }
 
 //Utilizado para eliminar recursão a esquerda
 void ListaArg1(): {}
 {
-   <VIRG> Tipo() <ID> (ListaArg1())?
+   (<VIRG> Tipo() <TOKEN_ID> ListaArg1())?
 }
 
 
