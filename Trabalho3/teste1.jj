@@ -1,13 +1,13 @@
 main{
-	newVar int n;	
-	n = 0;
+    newVar int n;	
+    n = 0;
 }
 
 func int soma1(int n){
     while((n<10)){
-        n = (n + 1);
-        System.output(n);
-	};
-	return n;
+      n = (n + 1);
+      System.output(n);
+    };
+    return n;
 }
 
