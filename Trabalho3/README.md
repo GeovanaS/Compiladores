@@ -15,4 +15,4 @@ Compilação:
 
 > javac *.java
 
-> java Karloff arquivo.txt
+> java Karloff arquivo
