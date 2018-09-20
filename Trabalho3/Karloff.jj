@@ -53,57 +53,35 @@ TOKEN :
 |<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
 |<DIGITOS:(["0"-"9"]) >
 |<LETRAS: ["a"-"z","A"-"Z"]>
-|<PONTO: ".">
-|<E: "E"> 
-|<MAIS: "+">
-|<MENOS: "-">
+|<TOKEN_LITERAL: ((["0"-"9"])+) (("."(["0"-"9"])+)? ("E"("+"|"-")? (["0"-"9"])+))?>
+|<TOKEN_ID: <LETRAS> (<LETRAS>|<DIGITOS>)*(<SUBL>(<LETRAS>|<DIGITOS>)+)*>
+
 }
-
-void LetraouDigito(): {}
-{
-   (<LETRAS>|<DIGITOS>)*
-}
-
-void FinalSublinhado(): {}
-{
-   <SUBL>(LetraouDigito())+ 
-}
-
-void TOKEN_id(): {}
-{
-   <LETRAS> (LetraouDigito())* (FinalSublinhado())*
-}
-
-void TOKEN_numLiteral(): {}
-{
-   Digitos() FracaoOp() ExpoenteOp()
-}
-
-void Digitos(): {}
-{
-   (<DIGITOS>)+
-}
-
-
-void ExpoenteOp(): {}
-{
-   (<E> (<MAIS>|<MENOS>)? Digitos())? 
-}
-
-void FracaoOp(): {}
-{
-   (<PONTO> Digitos())?
-}
-
 
 void Karloff () :
 {}
 { 
 
   Main() 
-//Func()?
+  (Func())?
   <EOF> 
 }
+
+
+
+
+void Main ():
+{}
+{
+  <MAIN> <ACHAVES> 
+ 
+   VarDecl()
+   SeqComandos()
+
+ <FCHAVES>
+
+}
+
 	
 void VarDecl(): {}
 {
@@ -132,12 +110,18 @@ void Comando(): {}
 
 void Exp(): {}
 {
-   <APAR> Exp() <OP> Exp <FPAR> | Fator()
+   <APAR> Exp() <OP> Exp() <FPAR> | Fator()
 }
 
 void Fator(): {}
 {
-   <ID> | <ID> <APAR> ListaExp() <FPAR> | TOKEN_numliteral() | <FALSE> | <TRUE>
+   <TOKEN_ID> Fator1() | <TOKEN_LITERAL> | <FALSE> | <TRUE>
+}
+
+//Utilizado para eliminar alternativa que começam com o mesmo simbolo
+void Fator1(): {}
+{
+  (<APAR> ListaExp() <FPAR>)?
 }
 
 void ListaExp(): {}
@@ -164,21 +148,9 @@ void ListaArg(): {}
 //Utilizado para eliminar recursão a esquerda
 void ListaArg1(): {}
 {
-   <VIRG> Tipo() <ID> ListaArg1())?
+   <VIRG> Tipo() <ID> (ListaArg1())?
 }
 
-
-void Main ():
-{}
-{
- <VOID><MAIN> <ACHAVES> 
- 
- // VarDecl()
- // SeqComandos()
-
- <FCHAVES>
-
-}
 
 
 
