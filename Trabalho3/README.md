@@ -1,6 +1,6 @@
 ﻿# Trabalho 3
 
-Analisador Sintático para a linguagem Karloff usando Javacc
+Parser em Javacc para a linguagem Karloff
 
 
 - Eliminar recursão à esquerda e alternativas que começam com o mesmo simbolo
