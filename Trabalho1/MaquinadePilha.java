@@ -61,5 +61,5 @@ MaquinadePilha(String nomeArq) throws IOException{
      }
         arquivo.close();
 }
-
+ 
 }
