@@ -1,4 +1,4 @@
-main{
+void main{
 	newVar int x;
 	newVar int y;
 	
