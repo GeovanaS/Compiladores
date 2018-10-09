@@ -71,7 +71,7 @@ void Karloff () :
 void Main ():
 {}
 {
-  <MAIN> <ACHAVES> 
+  <VOID> <MAIN> <ACHAVES> 
  
    VarDecl()
    SeqComandos()
