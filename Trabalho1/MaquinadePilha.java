@@ -29,19 +29,31 @@ MaquinadePilha(String nomeArq) throws IOException{
            pilha.push(Integer.valueOf(linha));
         }
         if(linha.contains("SUM")){
-           sum();
+           op1 = pilha.pop();
+           op2 = pilha.pop();
+           op = op2 + op1;
+           pilha.push(op);
         }
         if(linha.contains("SUB")){
-           sub();
+           op1 = pilha.pop();
+           op2 = pilha.pop();
+           op = op2 - op1;
+           pilha.push(op);
         }
         if(linha.contains("MULT")){
-           mult();
+           op1 = pilha.pop();
+           op2 = pilha.pop();
+           op = op2 * op1;
+           pilha.push(op);
         }
         if(linha.contains("DIV")){
-           div();
+           op1 = pilha.pop();
+           op2 = pilha.pop();
+           op = op2 / op1;
+           pilha.push(op);
         }
         if(linha.contains("PRINT")){
-          print();
+           System.out.println(pilha.pop());
         }
       }
      }catch(FileNotFoundException e){
@@ -49,37 +61,5 @@ MaquinadePilha(String nomeArq) throws IOException{
      }
         arquivo.close();
 }
-
-void print(){
-  System.out.println(pilha.pop());
-}
-
-void sum(){
-  op1 = pilha.pop();
-  op2 = pilha.pop();
-  op = op1 + op2;
-  pilha.push(op);
-} 
-
-void mult(){
-  op1 = pilha.pop();
-  op2 = pilha.pop();
-  op = op1 * op2;
-  pilha.push(op);
-} 
-
-void div(){
-  op1 = pilha.pop();
-  op2 = pilha.pop();
-  op = op1 / op2;
-  pilha.push(op);
-}
-
-void sub(){
-  op1 = pilha.pop();
-  op2 = pilha.pop();
-  op = op1 - op2;
-  pilha.push(op);
-} 
 
 }
