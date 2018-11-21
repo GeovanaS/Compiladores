@@ -2,18 +2,21 @@ PARSER_BEGIN(Karloff)
 import java.io.*;
 
 class Karloff{
-    Main main;
-    ArrayList <Func> funcao;
+  Main main;
+  ArrayList <Func> funcao;
+  Karloff(Main m,ArrayList <Func> f) {this.main = m; this.funcao.f;}
 }
 
 class Main{
   ArrayList <VarDecl> varDecl;
   ArrayList <Comando> comando;
+  Main(ArrayList <varDecl> varDecl, ArrayList <Comando> c) {this.varDecl = varDecl; this.comando = c;}
 }
 
 class VarDecl{
-  String var;
+  String variavel;
   Tipo tipo;
+  varDecl(String v,Tipo t){this.variavel = v; this.tipo = t;}
 }
 
 class Tipo{}
@@ -22,18 +25,21 @@ class Bool extends Tipo{}
 
 class Comando{}
 class Atribuicao extends Comando{
-   String var;
-   Exp exp;
+  String variavel;
+  Exp exp;
+  Atribuicao(String v,Exp e){this.variavel = var; this.e = exp;}
 }
 
 class ChamadaDeFuncao extends Comando{
   String func;
   ArrayList <Exp> argumentos;
+  ChamadaDeFuncao(String f, ArrayList <Exp> args){this.func = f; this.argumentos = args;}
 }
 
 class If extends Comando{
   Exp expBool;
   ArrayList <Comando> comandos;
+  If(Exp e,ArrayList <Comando> c){this.e = expBool; this.c = comandos;}
 }
 
 
@@ -58,8 +64,25 @@ public class Karloff {
   }
   
   public static void pprint(ArvoreKarloff prog){
+      pMain();
+
 
   }
+  
+  public static void pMain(Main main){
+      System.out.print("void ");
+      System.out.print("main ");
+      System.out.print("{ ");
+      
+      
+
+
+      System.out.print("}");
+  }
+
+ 
+
+  
 
   public static void geraCodigo(ArvoreKarloff prog){
 
@@ -113,16 +136,15 @@ TOKEN :
 }
 
 void Karloff () :
-{}
+{Main main; ArrayList <Func> f = new ArrayList<Func>();}
 { 
-
-  Main() 
-  (Func())?
+  main = Main()
+  (f = Func())?
   <EOF> 
+  {return new Karloff(main,f);}
 }
 
-
-
+// 
 
 void Main ():
 {}
