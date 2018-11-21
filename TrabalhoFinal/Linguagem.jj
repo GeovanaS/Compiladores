@@ -1,0 +1,79 @@
+PARSER_BEGIN(Linguagem)
+import java.io.*;
+
+class Exp {}
+class Num extends Exp{
+  int x;
+  Num(int x){this.x=x;}
+}
+class Soma extends Exp{
+	Exp a;
+	Exp b;
+  Soma(Exp a, Exp b){this.a=a;this.b=b;}
+}
+
+
+
+
+public class Linguagem {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+    Linguagem parser = new Linguagem(new FileInputStream(args[0]));
+    Exp e= parser.E();
+    printer(e);
+  }
+
+
+  static void printer (Exp e)
+	{
+		if (e instanceof Num)
+			{ System.out.print( ((Num) e).x);}
+		else
+			{
+				System.out.print("(");
+				printer (((Soma) e).a);
+				System.out.print("+");
+				printer (((Soma) e).b);
+				System.out.print(")");
+
+			}
+
+
+	}
+}
+PARSER_END(Linguagem)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  < NUM: ["0"-"9"] >
+}
+
+
+
+Exp E () :
+{Exp e=null;Token t;}
+{ 
+  ( (t=<NUM> {e= new Num(Integer.parseInt(t.image));} )| (e=Soma()))
+
+  {return e;}
+
+}
+	
+Soma Soma():
+{ Exp e1, e2;}
+{ 
+ 
+ "(" e1=E() "+" e2=E() ")"
+
+  {return new Soma(e1,e2);}
+
+}
