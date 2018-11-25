@@ -148,11 +148,11 @@ void Main ():
 {ArrayList <VarDecl> varDecl, ArrayList <Comando> seqComandos;}
 {
   <VOID> <MAIN> <ACHAVES> 
- 
    varDecl = VarDecl()
    seqComandos = SeqComandos()
-
  <FCHAVES>
+
+ {return new Main(varDecl,seqComandos);}
 }
 
 //
