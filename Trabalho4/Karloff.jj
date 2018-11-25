@@ -146,7 +146,7 @@ Karloff Karloff () :
 
 
 Main Main ():
-{ArrayList <VarDecl> varDecl, ArrayList <Comando> seqComandos;}
+{ArrayList <VarDecl> varDecl; ArrayList <Comando> seqComandos;}
 {
   <VOID> <MAIN> <ACHAVES> 
   varDecl = VarDecl()
