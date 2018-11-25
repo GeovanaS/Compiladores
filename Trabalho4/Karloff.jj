@@ -19,10 +19,18 @@ class VarDecl{
   varDecl(String v,Tipo t){this.variavel = v; this.tipo = t;}
 }
 
+// Tipo
 class Tipo{}
 class Int extends Tipo{}
 class Bool extends Tipo{}
 
+// SeqComandos
+class SeqComandos{
+  ArrayList <Comando> comando;
+  SeqComandos(ArrayList <Comando> comando){this.comando = comando};
+}
+
+// Comando
 class Comando{}
 class Atribuicao extends Comando{
   String variavel;
@@ -36,10 +44,99 @@ class ChamadaDeFuncao extends Comando{
   ChamadaDeFuncao(String f, ArrayList <Exp> args){this.func = f; this.argumentos = args;}
 }
 
+class Parenteses extends Comando{
+    String p;
+    ArrayList <Exp> listaExp;
+    Parenteses(String p, ArrayList <Exp> listExp){ this.p = p; this.listaExp=listExp;}    
+}
+
 class If extends Comando{
   Exp expBool;
   ArrayList <Comando> comandos;
-  If(Exp e,ArrayList <Comando> c){this.e = expBool; this.c = comandos;}
+  If(Exp e,ArrayList <Comando> c){this.expBool = e; this.comandos = c;}
+}
+
+class While extends Comando{
+  Exp exp;
+  ArrayList <Comando> comandos;  
+  While(Exp e, ArrayList <Comando> c){this.exp = e; this.comandos = c;}
+}
+
+class Repeat extends Comando{
+  ArrayList <Comando> comandos; 
+  Exp exp; 
+  Repeat(ArrayList <Comando> c,Exp e){this.comandos=c;this.exp = e;}
+}
+
+class Return extends Comando{
+  Exp e;
+  Return(Exp e){this.e = e;}
+}
+
+class SystemOutput extends Comando{
+   Exp e;
+   SystemOutput(Exp e){this.e = e;}
+}
+
+// Exp
+class Exp{}
+
+// Exp op Exp
+class OperacaoExp extends Exp{
+   Exp e1;
+   String op;
+   Exp e2;
+   OperacaoExp(Exp e1,Exp e2,String op){this.e1=e1;this.op=op;this.e2=e2;}
+}
+
+// Fator
+class Fator extends Exp{}
+
+// Fator Id
+class FatorId extends Fator{
+   String id;
+   FatorId(String id){this.id = id;}
+}
+// Fator Parenteses
+class FatorParenteses extends Fator{
+   String p;
+   ArrayList <Exp> listaExp;
+   FatorParenteses(String p,ArrayList <Exp> listaExp){this.p=p;this.listaExp=listaExp;}
+}
+// Fator NumLiteral
+class FatorNumLiteral extends Fator{
+   String numLit;
+   FatorNumLiteral(String numLit){this.numLit=numLit;}
+}
+
+// Fator Tipo
+class FatorTipo extends Fator{
+   Tipo tipo;
+   FatorTipo(Tipo tipo){this.tipo=tipo;}
+}
+
+//ListaExp
+class ListaExp{
+   Exp e;
+   listaExp(Exp e){this.e=e;}
+}
+
+//Func
+class Func{
+   Tipo tipo;
+   String id;
+   ArrayList <ListaArg> listaArg;
+   ArrayList <VarDecl> varDecl;
+   ArrayList <Comando> seqComandos;
+   Func(Tipo tipo,String id,ArrayList <ListaArg> listaArg,ArrayList <VarDecl> varDecl,ArrayList <Comando> seqComandos)
+   {this.tipo=tipo;this.id=id;this.listaArg=ListaArg;this.varDecl=varDecl;this.seqComandos=seqComandos;}
+}
+
+//ListaArg
+class ListaArg{
+   Tipo tipo;
+   String id;
+   ListaArg(Tipo tipo,String id){this.tipo=tipo;this.id=id}
 }
 
 
@@ -149,29 +246,35 @@ Main Main ():
 {ArrayList <VarDecl> varDecl; ArrayList <Comando> seqComandos;}
 {
   <VOID> <MAIN> <ACHAVES> 
-  varDecl = VarDecl()
-  seqComandos = SeqComandos()
-  <FCHAVES>
+   varDecl = VarDecl()
+   seqComandos = SeqComandos()
+ <FCHAVES>
 
  {return new Main(varDecl,seqComandos);}
 }
-
-//
 	
-void VarDecl(): {}
+VarDecl VarDecl(): 
+{ArrayList<VarDecl> varD = new ArrayList<VarDecl>(); String v;Tipo t;}
 {
-   (<NVAR> Tipo() <TOKEN_ID> <PVIRG>)*
+   ( v = <NVAR> t = Tipo() <TOKEN_ID> <PVIRG> {varD.add(new varDecl(v,t))})* 
+   {return VarD}
 }
 
-void Tipo(): {}
+Tipo Tipo(): 
+{Tipo t = null}
 {
-   (<INT>|<BOOL>)
+   ( t = <INT> {t = new Int();}) | ( t = <BOOL> = {t = new Bool();})
+   {return t;}
 }
 
-void SeqComandos(): {}
+ArrayList<Comando> SeqComandos():
+{ArrayList <Comando> comando = new ArrayList<Comando>(); Comando c}
 {
-   (Comando())* 
+   ( c = Comando() {comando.add(c);})*
+   {return comando;} 
 }
+
+/////
 
 void Comando(): {}
 {
