@@ -135,7 +135,7 @@ TOKEN :
 |<#LETRAS: ["a"-"z","A"-"Z"]>
 }
 
-void Karloff () :
+Karloff Karloff () :
 {Main main; ArrayList <Func> f = new ArrayList<Func>();}
 { 
   main = Main()
@@ -144,13 +144,14 @@ void Karloff () :
   {return new Karloff(main,f);}
 }
 
-void Main ():
+
+Main Main ():
 {ArrayList <VarDecl> varDecl, ArrayList <Comando> seqComandos;}
 {
   <VOID> <MAIN> <ACHAVES> 
-   varDecl = VarDecl()
-   seqComandos = SeqComandos()
- <FCHAVES>
+  varDecl = VarDecl()
+  seqComandos = SeqComandos()
+  <FCHAVES>
 
  {return new Main(varDecl,seqComandos);}
 }
