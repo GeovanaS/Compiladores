@@ -9,8 +9,8 @@ class Karloff{
 
 class Main{
   ArrayList <VarDecl> varDecl;
-  ArrayList <Comando> comando;
-  Main(ArrayList <varDecl> varDecl, ArrayList <Comando> c) {this.varDecl = varDecl; this.comando = c;}
+  ArrayList <Comando> seqComandos;
+  Main(ArrayList <VarDecl> varDecl, ArrayList <Comando> seqComandos) {this.varDecl = varDecl; this.comando = c;}
 }
 
 class VarDecl{
@@ -144,19 +144,18 @@ void Karloff () :
   {return new Karloff(main,f);}
 }
 
-// 
-
 void Main ():
-{}
+{ArrayList <VarDecl> varDecl, ArrayList <Comando> seqComandos;}
 {
   <VOID> <MAIN> <ACHAVES> 
  
-   VarDecl()
-   SeqComandos()
+   varDecl = VarDecl()
+   seqComandos = SeqComandos()
 
  <FCHAVES>
-
 }
+
+//
 	
 void VarDecl(): {}
 {
