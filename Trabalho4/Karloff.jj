@@ -1,10 +1,10 @@
 PARSER_BEGIN(Karloff)
 import java.io.*;
 
-class Karloff{
+class ProgKarloff{
   Main main;
   ArrayList <Func> funcao;
-  Karloff(Main m,ArrayList <Func> f) {this.main = m; this.funcao.f;}
+  ProgKarloff(Main m,ArrayList <Func> f) {this.main = m; this.funcao.f;}
 }
 
 class Main{
@@ -27,7 +27,7 @@ class Bool extends Tipo{}
 // SeqComandos
 class SeqComandos{
   ArrayList <Comando> comando;
-  SeqComandos(ArrayList <Comando> comando){this.comando = comando};
+  SeqComandos(ArrayList <Comando> comando){this.comando = comando;}
 }
 
 // Comando
@@ -136,7 +136,7 @@ class Func{
 class ListaArg{
    Tipo tipo;
    String id;
-   ListaArg(Tipo tipo,String id){this.tipo=tipo;this.id=id}
+   ListaArg(Tipo tipo,String id){this.tipo=tipo;this.id=id;}
 }
 
 
@@ -232,13 +232,13 @@ TOKEN :
 |<#LETRAS: ["a"-"z","A"-"Z"]>
 }
 
-Karloff Karloff () :
+ProgKarloff Karloff () :
 {Main main; ArrayList <Func> f = new ArrayList<Func>();}
 { 
   main = Main()
   (f = Func())?
   <EOF> 
-  {return new Karloff(main,f);}
+  {return new ProgKarloff(main,f);}
 }
 
 
@@ -256,19 +256,24 @@ Main Main ():
 VarDecl VarDecl(): 
 {ArrayList<VarDecl> varD = new ArrayList<VarDecl>(); String v;Tipo t;}
 {
-   ( v = <NVAR> t = Tipo() <TOKEN_ID> <PVIRG> {varD.add(new varDecl(v,t))})* 
-   {return VarD}
+   ( v = <NVAR> 
+    t = Tipo() 
+    <TOKEN_ID> 
+    <PVIRG> 
+    {varD.add(new VarDecl(v,t));})* 
+   {return VarD;}
 }
 
 Tipo Tipo(): 
-{Tipo t = null}
+{Tipo tipo = null;Token t;}
 {
-   ( t = <INT> {t = new Int();}) | ( t = <BOOL> = {t = new Bool();})
-   {return t;}
+   ( t = <INT> {tipo = new Int();}) 
+   | ( t = <BOOL> {tipo = new Bool();})
+   {return tipo;}
 }
 
 ArrayList<Comando> SeqComandos():
-{ArrayList <Comando> comando = new ArrayList<Comando>(); Comando c}
+{ArrayList <Comando> comando = new ArrayList<Comando>(); Comando c;}
 {
    ( c = Comando() {comando.add(c);})*
    {return comando;} 
