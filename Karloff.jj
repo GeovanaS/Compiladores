@@ -341,6 +341,7 @@ ListaArg ListaArg():
 {Tipo tipo;Token id;}
 {
    {tipo = new Tipo();}  id = <TOKEN_ID> (ListaArg1())
+   {return new ListaArg(tipo,id);}
 }
 
 //Utilizado para eliminar recursão a esquerda
