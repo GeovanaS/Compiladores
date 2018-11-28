@@ -1,6 +1,13 @@
 PARSER_BEGIN(Karloff)
 import java.io.*;
 
+// Compiladores - 2018/2
+// Trabalho: Tradução Dirigida por Sintaxe
+// Grupo: Geovana Silveira e André Teixeira
+
+
+// Classes que representam a árvore sintatica
+
 class ProgKarloff{
   Main main;
   ArrayList <Func> funcao;
@@ -45,9 +52,9 @@ class ChamadaDeFuncao extends Comando{
 }
 
 class Parenteses extends Comando{
-    String p;
-    ArrayList <Exp> listaExp;
-    Parenteses(String p, ArrayList <Exp> listExp){ this.p = p; this.listaExp=listExp;}    
+  String p;
+  ArrayList <Exp> listaExp;                                                                                   
+  Parenteses(String p, ArrayList <Exp> listExp){ this.p = p; this.listaExp=listExp;}    
 }
 
 class If extends Comando{
@@ -109,10 +116,10 @@ class FatorNumLiteral extends Fator{
    FatorNumLiteral(String numLit){this.numLit=numLit;}
 }
 
-// Fator Tipo
-class FatorTipo extends Fator{
-   Tipo tipo;
-   FatorTipo(Tipo tipo){this.tipo=tipo;}
+// Fator Bool
+class FatorBool extends Fator{
+   Bool bool;
+   FatorBool(Bool bool){this.bool=bool;}
 }
 
 //ListaExp
@@ -161,29 +168,11 @@ public class Karloff {
   }
   
   public static void pprint(ArvoreKarloff prog){
-      pMain();
+   
 
 
   }
   
-  public static void pMain(Main main){
-      System.out.print("void ");
-      System.out.print("main ");
-      System.out.print("{ ");
-      
-      
-
-
-      System.out.print("}");
-  }
-
- 
-
-  
-
-  public static void geraCodigo(ArvoreKarloff prog){
-
-  }
 }
 
 PARSER_END(Karloff)
@@ -232,7 +221,8 @@ TOKEN :
 |<#LETRAS: ["a"-"z","A"-"Z"]>
 }
 
-ProgKarloff Karloff () :
+
+ProgKarloff ProgKarloff () :
 {Main main; ArrayList <Func> f = new ArrayList<Func>();}
 { 
   main = Main()
@@ -252,7 +242,7 @@ Main Main ():
 
  {return new Main(varDecl,seqComandos);}
 }
-	
+  
 VarDecl VarDecl(): 
 {ArrayList<VarDecl> varD = new ArrayList<VarDecl>(); String v;Tipo t;}
 {
@@ -281,9 +271,10 @@ ArrayList<Comando> SeqComandos():
 
 /////
 
-void Comando(): {}
+Comando Comando(): 
+{Comando c = null; Token t;}
 {
-   <TOKEN_ID> Comando1()
+  (t = <TOKEN_ID> {c = new Comando1(); })
 |  <IF> <APAR> Exp() <FPAR> <THEN> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
 |  <WHILE> <APAR> Exp() <FPAR> <ACHAVES> SeqComandos() <FCHAVES> <PVIRG>
 |  <REPEAT> <ACHAVES> SeqComandos() <FCHAVES> <UNTIL> <APAR> Exp() <FPAR> <PVIRG>
@@ -292,46 +283,77 @@ void Comando(): {}
 }
 
 //Utilizado para eliminar alternativa que comecam com o mesmo simbolo
-void Comando1(): {}
+void Comando1(): 
+{ }
 {
   <ATRIB>Exp()<PVIRG>|<APAR>(ListaExp())?<FPAR><PVIRG>
 }
 
-void Exp(): {}
+Exp Exp():
+{Exp e1;Exp e2;Token operacao;Fator f;}
 {
-   <APAR> Exp() <OP> Exp() <FPAR> | Fator()
+   <APAR> e1 = Exp() operacao = <OP> e2 = Exp() <FPAR> 
+   {return new OperacaoExp(e1,e2,operacao.image);}
+   | f = Fator()
+   {return f;}
 }
 
-void Fator(): {}
+Fator Fator(): 
+{Token id; ArrayList <Exp> lista; Token numLiteral;Token bool;}
 {
-   <TOKEN_ID> Fator1() | <TOKEN_LITERAL> | <FALSE> | <TRUE>
+   (id = <TOKEN_ID> lista = Fator1())
+   {lista.add(id);}
+   {return lista;} 
+   | (numLiteral = <TOKEN_LITERAL>)
+   {return new FatorNumLiteral(numLiteral.image);}
+   | (bool = <FALSE>) 
+   {return new FatorBool(bool.image);}
+   | (bool = <TRUE>)
+   {return new FatorBool(bool.image);}
 }
 
-//Utilizado para eliminar alternativa que começam com o mesmo simbolo
-void Fator1(): {}
+// Função Utilizada para eliminar alternativa que começam com o mesmo simbolo
+// FATOR -> TOKEN_id FATOR1 | TOKEN_numliteral | "true"| "false"
+// FATOR1 -> "(" LISTAEXP? ")" | vazio
+ArrayList <Exp> Fator1(): 
+{ArrayList <Exp> lista = new ArrayList<Exp>();}
 {
-  (<APAR> ListaExp() <FPAR>)?
+  (<APAR> lista = ListaExp() <FPAR>)?
+  {return lista;}
 }
 
-void ListaExp(): {}
+ListaExp ListaExp(): 
+{Exp e; ArrayList <Exp> listExp = new ArrayList<Exp>();}
 {
-   Exp() ListaExp1()  
+   e = Exp() listExp = ListaExp1()  
+   {listExp.add(e);}
+   {return listExp;}
 }
 
-//Utilizado para eliminar recursão a esquerda
-void ListaExp1(): {}
+//Função utilizada para eliminar recursão a esquerda
+// LISTAEXP -> EXP | LISTAEXP1
+// LISTAEXP1 -> ,EXP LISTAEXP1 | vazio 
+ArrayList<Exp> ListaExp1(): 
+{Exp e; ArrayList <Exp> listExp = new ArrayList<Exp>();}
 {
-   (<VIRG> Exp() ListaExp1())?  
+   (<VIRG> e = Exp() listExp = ListaExp1())?
+   {return listExp;} 
 }
 
-void Func(): {}
+Func Func(): 
+{ArrayList <Func> funcao = new ArrayList<Func>(); ArrayList <ListaArg> lista; ArrayList <VarDecl> varD; ArrayList <SeqComandos> seqC; Tipo tipo; Token id;}
 {
-   (<FUNC> Tipo() <TOKEN_ID> <APAR> (ListaArg())? <FPAR> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
+   (<FUNC> tipo = Tipo() id = <TOKEN_ID> <APAR> (lista = ListaArg()) <FPAR> 
+   <ACHAVES> (varD = VarDecl()) (seqC = SeqComandos()) <FCHAVES>
+   {Funcao.add(new Func(tipo,id,listaArg,varD,seqC));})+
+   {return funcao;}
 }
 
-void ListaArg(): {}
+ListaArg ListaArg(): 
+{Tipo tipo;Token id;}
 {
-   Tipo() <TOKEN_ID> (ListaArg1())
+   {tipo = new Tipo();}  id = <TOKEN_ID> (ListaArg1())
+   {return new ListaArg(tipo,id);}
 }
 
 //Utilizado para eliminar recursão a esquerda
