@@ -1,0 +1,13 @@
+void main{
+    newVar int n;	
+    n = 0;
+}
+
+func int soma1_(int n){
+    while((n<10)){
+      n = (n + 1);
+      System.output(n);
+    };
+    return n;
+}
+
