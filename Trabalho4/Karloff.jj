@@ -268,7 +268,7 @@ public class Karloff {
 
    public static void pComando1(Object exp){
      if(exp instanceof Exp){
-       System.out.print(" = ");
+       System.out.print("= ");
 	     pExp((Exp)exp);
      }else if (exp instanceof ArrayList){
 		System.out.print("  (");
