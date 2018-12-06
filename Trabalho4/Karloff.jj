@@ -288,7 +288,7 @@ public class Karloff {
          if(exp instanceof OperacaoExp){
          	System.out.print("(");
             pExp(((OperacaoExp)exp).e1);
-            System.out.print(((OperacaoExp) exp).op +" ");
+            System.out.print(" "+ ((OperacaoExp) exp).op +" ");
             pExp(((OperacaoExp)exp).e2);
             System.out.print(")");
          }
