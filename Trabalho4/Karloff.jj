@@ -247,7 +247,7 @@ public class Karloff {
           System.out.print("repeat");
           System.out.println("{");
           pSeqComandos(((Repeat)comando).comandos);
-          System.out.println("}");
+          System.out.print("}");
           System.out.print("until");
           System.out.print("(");
           pExp(((Repeat) comando).exp);
