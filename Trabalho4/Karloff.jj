@@ -80,7 +80,6 @@ class OperacaoExp extends Exp{
    OperacaoExp(Exp e1,Exp e2,String op){this.e1=e1;this.op=op;this.e2=e2;}
 }
 
-
 // Fator
 class Fator extends Exp{}
 
@@ -360,6 +359,7 @@ TOKEN :
 }
 
 
+// KARLOFF -> MAIN FUNC?
 ArvoreKarloff Karloff () :
 {Main main; ArrayList <Func> f = new ArrayList<Func>();}
 { 
@@ -370,23 +370,7 @@ ArvoreKarloff Karloff () :
 }
 
 
-ArrayList<Func> Func(): 
-{ArrayList <Func> funcao = new ArrayList<Func>(); ArrayList <ListaArg> lista; ArrayList <VarDecl> varD; ArrayList <Comando> seqC; String tipo; Token id;}
-{
-   (<FUNC> tipo = Tipo() id = <TOKEN_ID> <APAR> (lista = ListaArg()) <FPAR> 
-   <ACHAVES> (varD = VarDecl()) (seqC = SeqComandos()) <FCHAVES>
-   {funcao.add(new Func(tipo,id,lista,varD,seqC));})+
-   {return funcao;}
-}
-
-ArrayList<ListaArg> ListaArg(): 
-{String tipo; Token id; ArrayList <ListaArg> lista = new ArrayList<ListaArg>(); String tipo2; Token id2;}
-{
-   tipo = Tipo()  id = <TOKEN_ID> 
-   (<VIRG> tipo2 = Tipo() id2 = <TOKEN_ID> {lista.add(new ListaArg(tipo2,id2));})*
-   {lista.add(0,new ListaArg(tipo,id)); return lista;}
-}
-
+// MAIN -> "void" "main" "{" VARDECL SEQCOMANDOS "}"
 Main Main ():
 {ArrayList <VarDecl> varDecl; ArrayList <Comando> seqComandos;}
 {
@@ -397,37 +381,39 @@ Main Main ():
   {return new Main(varDecl,seqComandos);}
 }
 
+
+// VARDECL -> VARDECL "newVar" TIPO TOKEN_id ";" | vazio
 ArrayList<VarDecl> VarDecl(): 
 {ArrayList<VarDecl> varD = new ArrayList<VarDecl>(); Token v; String t;}
 {
-   (<NVAR> 
-    t = Tipo() 
-    v = <TOKEN_ID> 
-    <PVIRG> 
-    {varD.add(new VarDecl(v,t));})* 
+   (<NVAR> t = Tipo() v = <TOKEN_ID> <PVIRG> {varD.add(new VarDecl(v,t));})* 
    {return varD;}
 }
 
+// TIPO -> "int" | "boOl"
 String Tipo():
 {Token tipo;}
 {
-  tipo = <TIPO>
-  {return tipo.image;}
+  tipo = <TIPO> {return tipo.image;}
 }
 
+// SEQCOMANDOS -> SEQCOMANDOS COMANDO | vazio
 ArrayList<Comando> SeqComandos():
 {ArrayList <Comando> comando = new ArrayList<Comando>(); Comando c;}
 {
-   ( c = Comando() {comando.add(c);})*
+   ( c = Comando() {comando.add(c);} )* 
    {return comando;} 
 }
+
 
 Comando Comando(): 
 {Token id; ArrayList <Exp> lista; ArrayList <Comando> seqC; Exp e; Object c;}
 {
   (id = <TOKEN_ID> (c = Comando1()))
-  {if (c instanceof Exp) return new Atribuicao(id,((Exp) c));
-  else return new ChamadaDeFuncao(id.image,((ArrayList<Exp>) c));}
+  {if (c instanceof Exp){
+    return new Atribuicao(id,((Exp) c));
+  }else 
+    return new ChamadaDeFuncao(id.image,((ArrayList<Exp>) c));}
 
 |  <IF> <APAR> {e = Exp();} <FPAR> <THEN> <ACHAVES> (seqC = SeqComandos() <FCHAVES> <PVIRG>)
    {return new If(e,seqC);}
@@ -455,6 +441,7 @@ Object Comando1():
   {return c;}
 }
 
+// EXP -> "(" EXP OP EXP ")" | FATOR
 Exp Exp():
 {Exp e1;Exp e2;Token operacao;Fator f;}
 {
@@ -464,37 +451,65 @@ Exp Exp():
    {return f;}
 }
 
-ArrayList<Exp> ListaExp(): 
-{Exp e; ArrayList <Exp> listExp = new ArrayList<Exp>(); Exp e2;}
-{
-   e = Exp() ( <VIRG> e2 = Exp() {listExp.add(e2); })* 
-   {listExp.add(0,e);
-    return listExp;}
-}
-
+// FATOR -> TOKEN_id | TOKEN_id "(" LISTAEXP? ")" | TOKEN_numliteral | "true" | "false"
 Fator Fator(): 
 {Token id; ArrayList <Exp> lista; Token numLiteral;Token bool;}
 {
-   (id = <TOKEN_ID> lista = Fator1())
-   {if (lista.isEmpty()) return new FatorId(id.image);
-   	else return new FatorParenteses(id.image,lista);}
-   
+   (id = <TOKEN_ID> {return new FatorId(id.image);} (lista = Fator1() {return new FatorParenteses(id.image,lista);} ))
    | numLiteral = <TOKEN_LITERAL>
    {return new FatorNumLiteral(numLiteral.image);}
    
-   | bool = <FALSE> 
+   | bool = <TRUE> 
    {return new FatorBool(bool.image);}
    
-   | bool = <TRUE>
+   | bool = <FALSE>
    {return new FatorBool(bool.image);}
 }
 
 // Função Utilizada para eliminar alternativa que começam com o mesmo simbolo
-// FATOR -> TOKEN_id FATOR1 | TOKEN_numliteral | "true"| "false"
 // FATOR1 -> "(" LISTAEXP? ")" | vazio
-ArrayList <Exp> Fator1(): 
+ArrayList<Exp> Fator1(): 
 {ArrayList <Exp> lista = new ArrayList<Exp>();}
 {
   (<APAR> lista = ListaExp() <FPAR>)?
   {return lista;}
+}
+
+// LISTAEXP -> EXP | LISTAEXP "," EXP
+ArrayList<Exp> ListaExp(): 
+{Exp e; ArrayList <Exp> listExp = new ArrayList<Exp>(); Exp e2;}
+{
+   e = Exp() listExp = ListaExp1()
+   {return listExp;}
+}
+
+//Utilizado para eliminar recursão a esquerda
+// ListaExp1 -> ,ExpListaExp1| vazio
+ArrayList<Exp> ListaExp1():
+{ArrayList<Exp> listaE = new ArrayList<Exp>();}
+{
+   (<VIRG> Exp() ListaExp1() )?  
+
+   {listaE.add(Exp());
+   return listaE;}
+}
+
+// FUNC "func" TIPO TOKEN_id "(" LISTAARG? ")" "{" VARDECL SEQCOMANDOS "}"| "func" TIPO TOKEN_id "(" LISTAARG? ")" "{" VARDECL SEQCOMANDOS "}" LISTAARG -> TIPO TOKEN_id |
+ArrayList<Func> Func(): 
+{ArrayList <Func> funcao = new ArrayList<Func>(); ArrayList <ListaArg> lista; ArrayList <VarDecl> varD; ArrayList <Comando> seqC; String tipo; Token id;}
+{
+   (<FUNC> tipo = Tipo() id = <TOKEN_ID> <APAR> (lista = ListaArg()) <FPAR> 
+   <ACHAVES> (varD = VarDecl()) (seqC = SeqComandos()) <FCHAVES>
+   {funcao.add(new Func(tipo,id,lista,varD,seqC));})+
+   {return funcao;}
+}
+
+//LISTAARG -> TIPO TOKEN_id | LISTAARG "," TIPO TOKEN_id
+ArrayList<ListaArg> ListaArg(): 
+{String tipo; Token id; ArrayList <ListaArg> lista = new ArrayList<ListaArg>(); String tipo2; Token id2;}
+{
+   tipo = Tipo()  id = <TOKEN_ID>
+   (<VIRG> tipo2 = Tipo() id2 = <TOKEN_ID> {lista.add(new ListaArg(tipo2,id2));})*
+   {lista.add(new ListaArg(tipo,id)); return lista;}
+   {return lista;}
 }
