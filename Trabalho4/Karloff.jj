@@ -80,6 +80,7 @@ class OperacaoExp extends Exp{
    OperacaoExp(Exp e1,Exp e2,String op){this.e1=e1;this.op=op;this.e2=e2;}
 }
 
+
 // Fator
 class Fator extends Exp{}
 
@@ -154,16 +155,16 @@ public class Karloff {
      pprint(arvore);
     }
  
-	public static void pprint (ArvoreKarloff prog){
+   	public static void pprint (ArvoreKarloff prog){
         if(prog instanceof ArvoreKarloff){
            pmain(prog.main);
            for(Func func:prog.funcao){
                pFunc(func);
            }
         }
-	}
+  	}
     
-	public static void pmain(Main main){
+	  public static void pmain(Main main){
        System.out.print("void ");
        System.out.print("main");
        System.out.println("{ ");
@@ -172,9 +173,9 @@ public class Karloff {
        }
        pSeqComandos(main.seqComandos);
        System.out.println("}"); 
-    }  
+     }  
     
-    public static void pFunc(Func func){
+     public static void pFunc(Func func){
        System.out.println(" ");
        System.out.print("func ");
        System.out.print(func.tipo+" ");
@@ -194,7 +195,7 @@ public class Karloff {
            pComando(comando);
        }
        System.out.println("}");
-       }
+    }
 
 
     public static void pVarDecl(VarDecl varD){
@@ -271,13 +272,13 @@ public class Karloff {
        System.out.print("= ");
 	     pExp((Exp)exp);
      }else if (exp instanceof ArrayList){
-		System.out.print("  (");
+		    System.out.print("  (");
         for (Exp e : ((ArrayList <Exp>)exp)) {
 			      pExp(e);
 		}
-		System.out.print(") ");
-		System.out.println("; ");	
-	}		
+	 	 System.out.print(") ");
+	 	 System.out.println("; ");	
+	  }		
 
    }
 
@@ -288,7 +289,7 @@ public class Karloff {
          if(exp instanceof OperacaoExp){
          	System.out.print("(");
             pExp(((OperacaoExp)exp).e1);
-            System.out.print(" "+ ((OperacaoExp) exp).op +" ");
+            System.out.print(" "+((OperacaoExp) exp).op +" ");
             pExp(((OperacaoExp)exp).e2);
             System.out.print(")");
          }
@@ -342,7 +343,7 @@ TOKEN :
 | <REPEAT: "repeat">
 | <RETURN: "return">
 | <UNTIL: "until">
-| <SO: "System.output">
+| <SYSTEM_OUT: "System.output">
 | <ATRIB: "=">
 | <FUNC: "func">
 | <VOID: "void">
@@ -407,38 +408,33 @@ ArrayList<Comando> SeqComandos():
 
 
 Comando Comando(): 
-{Token id; ArrayList <Exp> lista; ArrayList <Comando> seqC; Exp e; Object c;}
+{Token id=null; ArrayList <Exp> lista; ArrayList <Comando> seqC; Exp e; Object c;}
 {
-  (id = <TOKEN_ID> (c = Comando1()))
-  {if (c instanceof Exp){
-    return new Atribuicao(id,((Exp) c));
-  }else 
-    return new ChamadaDeFuncao(id.image,((ArrayList<Exp>) c));}
+    id = <TOKEN_ID> <ATRIB> c =  Exp() <PVIRG> 
+    {return new Atribuicao(id,(Exp)c);}
+  | c = Comando1() 
+    {return new ChamadaDeFuncao(id.image,((ArrayList<Exp>) c));}
 
-|  <IF> <APAR> {e = Exp();} <FPAR> <THEN> <ACHAVES> (seqC = SeqComandos() <FCHAVES> <PVIRG>)
-   {return new If(e,seqC);}
+  | <IF> <APAR> {e = Exp();} <FPAR> <THEN> <ACHAVES> seqC = SeqComandos() <FCHAVES> <PVIRG>
+    {return new If(e,seqC);}
 
-|  <WHILE> <APAR> (e = Exp()) <FPAR> <ACHAVES> (seqC = SeqComandos() <FCHAVES> <PVIRG>)
-   {return new While(e,seqC);}
+  | <WHILE> <APAR> e = Exp() <FPAR> <ACHAVES> seqC = SeqComandos() <FCHAVES> <PVIRG>
+    {return new While(e,seqC);}
 
-|  <REPEAT> <ACHAVES> (seqC =SeqComandos()) <FCHAVES> <UNTIL> <APAR> (e = Exp() <FPAR> <PVIRG>)
-  {return new Repeat(seqC,e);}
+  | <REPEAT> <ACHAVES> seqC =SeqComandos() <FCHAVES> <UNTIL> <APAR> e = Exp() <FPAR> <PVIRG>
+    {return new Repeat(seqC,e);}
 
-|  <RETURN> e = Exp() <PVIRG>
-   {return new Return(e);}
+  | <RETURN> e = Exp() <PVIRG>
+    {return new Return(e);}
 
-|  <SO> <APAR> e =Exp() <FPAR> <PVIRG>
-   {return new SystemOutput(e);}
+  | <SYSTEM_OUT> <APAR> e = Exp() <FPAR> <PVIRG>
+    {return new SystemOutput(e);}
 }
 
-//Utilizado para eliminar alternativa que comecam com o mesmo simbolo
-Object Comando1(): 
-{Object c;}
+ArrayList <Exp> Comando1(): 
+{ArrayList <Exp> c;}
 {
-  (<ATRIB> (c =  Exp()) <PVIRG>)
-  {return c;}
-  | (<APAR> (c = ListaExp()) <FPAR><PVIRG>)
-  {return c;}
+  (<APAR> (c = ListaExp()) <FPAR><PVIRG>) {return c;}
 }
 
 // EXP -> "(" EXP OP EXP ")" | FATOR
