@@ -156,25 +156,24 @@ public class Karloff {
     }
  
    	public static void pprint (ArvoreKarloff prog){
-        if(prog instanceof ArvoreKarloff){
-           pmain(prog.main);
-           for(Func func:prog.funcao){
-               pFunc(func);
-           }
+      if(prog instanceof ArvoreKarloff){
+         System.out.print("void ");
+         System.out.print("main");
+         System.out.println("{ ");
+        for(VarDecl varD: prog.main.varDecl){
+            System.out.print("newVar ");
+            System.out.print(varD.tipo + " ");
+            System.out.print(varD.variavel);
+            System.out.println(";");
         }
-  	}
-    
-	  public static void pmain(Main main){
-       System.out.print("void ");
-       System.out.print("main");
-       System.out.println("{ ");
-       for(VarDecl varD: main.varDecl){
-          pVarDecl(varD);
+        pSeqComandos(prog.main.seqComandos);
+        System.out.println("}"); 
+        for(Func funcao: prog.funcao){
+            pFunc(funcao);
+        } 
        }
-       pSeqComandos(main.seqComandos);
-       System.out.println("}"); 
-     }  
-    
+     }
+
      public static void pFunc(Func func){
        System.out.println(" ");
        System.out.print("func ");
@@ -183,47 +182,32 @@ public class Karloff {
        System.out.print("(");
 
        for(ListaArg listArg: func.listaArg){
-           pListaArg(listArg);
+          System.out.print(listArg.tipo + " ");
+          System.out.print(listArg.id);
        }
+       
        System.out.print(")");
        System.out.println("{ ");
 
        for(VarDecl varD: func.varDecl){
-           pVarDecl(varD);
+           System.out.print("newVar ");
+           System.out.print(varD.tipo + " ");
+           System.out.print(varD.variavel);
+           System.out.println(";");
        }    
        for(Comando comando:func.seqComandos){
            pComando(comando);
        }
        System.out.println("}");
     }
-
-
-    public static void pVarDecl(VarDecl varD){
-        System.out.print("newVar ");
-        System.out.print(varD.tipo + " ");
-        System.out.print(varD.variavel);
-        System.out.println(";");
-
-    }
-
-    public static void pListaArg(ListaArg listArg){
-       System.out.print(listArg.tipo + " ");
-       System.out.print(listArg.id);
-    }
-   
-    public static void pSeqComandos(ArrayList <Comando> c){
-       for(Comando comando: c){
-          pComando(comando);
-       }
-    }
-   
+    
     public static void pComando(Comando comando){
        if(comando instanceof Atribuicao){
-          System.out.print(((Atribuicao)comando).variavel+" ");
+          System.out.print(((Atribuicao)comando).variavel + " ");
           pComando1(((Atribuicao)comando).exp);
           System.out.println(";");
        }else if(comando instanceof ChamadaDeFuncao){
-          System.out.print(((ChamadaDeFuncao)comando).func+" ");
+          System.out.print(((ChamadaDeFuncao)comando).func + " ");
           pComando1(((ChamadaDeFuncao)comando).argumentos);
        }else if(comando instanceof If){
           System.out.print("if");
@@ -270,39 +254,45 @@ public class Karloff {
    public static void pComando1(Object exp){
      if(exp instanceof Exp){
        System.out.print("= ");
-	     pExp((Exp)exp);
+       pExp((Exp)exp);
      }else if (exp instanceof ArrayList){
-		    System.out.print("  (");
-        for (Exp e : ((ArrayList <Exp>)exp)) {
-			      pExp(e);
-		}
-	 	 System.out.print(") ");
-	 	 System.out.println("; ");	
-	  }		
+       System.out.print("  (");
+       for(Exp e : ((ArrayList <Exp>)exp)){
+           pExp(e);
+       }
+       System.out.print(") ");
+       System.out.println("; ");  
+    }   
+   }
 
+   public static void pSeqComandos(ArrayList <Comando> c){
+      for(Comando comando: c){
+          pComando(comando);
+      }
    }
 
    public static void pExp(Exp exp){
-       if(exp instanceof Fator){
+      if(exp instanceof Fator){
          pFator(exp);
-       }else{
-         if(exp instanceof OperacaoExp){
-         	System.out.print("(");
-            pExp(((OperacaoExp)exp).e1);
-            System.out.print(" "+((OperacaoExp) exp).op +" ");
-            pExp(((OperacaoExp)exp).e2);
-            System.out.print(")");
-         }
-       }       
+      }else{
+        if(exp instanceof OperacaoExp){
+          System.out.print("(");
+          pExp(((OperacaoExp)exp).e1);
+          System.out.print(" " + ((OperacaoExp) exp).op + " ");
+          pExp(((OperacaoExp)exp).e2);
+          System.out.print(")");
+        }
+     }       
    }
+
    public static void pFator(Exp exp){
       if(exp instanceof FatorId){
          System.out.print(((FatorId)exp).id);
       }else if(exp instanceof FatorParenteses){
-      	 System.out.print( ((FatorParenteses) exp).p);
+         System.out.print( ((FatorParenteses) exp).p);
          System.out.print("(");
          for(Exp e: ((FatorParenteses)exp).listaExp){
-         	pExp(e);
+          pExp(e);
          }
          System.out.print(")");
       }else if(exp instanceof FatorNumLiteral){
@@ -311,7 +301,6 @@ public class Karloff {
          System.out.print(((FatorBool)exp).bool + " ");
       }
    }   
-
 }
 
 PARSER_END(Karloff)
