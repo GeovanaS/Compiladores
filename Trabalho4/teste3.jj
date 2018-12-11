@@ -1,12 +1,10 @@
 void main{
-	newVar int x;
-	newVar int y;
-	
-	x = 6;
-	y = 4;
-
-	repeat{
-	  x = (x - 1);
-	  y = (y - 1);
-	}until(((x > 0) || (y > 0)));
+    newVar int x;
+    newVar int y;
+    x = 6;
+    y = 4;	
+    repeat{
+    x = (x - 1);
+    y = (y - 1);
+    }until(((x > 0) || (y > 0)));
 }

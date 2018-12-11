@@ -160,12 +160,14 @@ public class Karloff {
          System.out.print("void ");
          System.out.print("main");
          System.out.println("{ ");
+
         for(VarDecl varD: prog.main.varDecl){
-            System.out.print("newVar ");
+            System.out.print("    newVar ");
             System.out.print(varD.tipo + " ");
             System.out.print(varD.variavel);
             System.out.println(";");
         }
+        System.out.print(" ");
         pSeqComandos(prog.main.seqComandos);
         System.out.println("}"); 
         for(Func funcao: prog.funcao){
@@ -185,7 +187,7 @@ public class Karloff {
           System.out.print(listArg.tipo + " ");
           System.out.print(listArg.id);
        }
-       
+
        System.out.print(")");
        System.out.println("{ ");
 
@@ -203,35 +205,43 @@ public class Karloff {
     
     public static void pComando(Comando comando){
        if(comando instanceof Atribuicao){
+          System.out.print("   ");
           System.out.print(((Atribuicao)comando).variavel + " ");
           pComando1(((Atribuicao)comando).exp);
           System.out.println(";");
        }else if(comando instanceof ChamadaDeFuncao){
+          System.out.print("   ");
           System.out.print(((ChamadaDeFuncao)comando).func + " ");
           pComando1(((ChamadaDeFuncao)comando).argumentos);
        }else if(comando instanceof If){
+          System.out.print("   ");
           System.out.print("if");
           System.out.print("(");
           pExp(((If) comando).expBool);
           System.out.println(")");
+          System.out.print("   ");
           System.out.print("then");
           System.out.println("{");
           pSeqComandos(((If)comando).comandos);
+          System.out.print("   ");
           System.out.print("}");
           System.out.println(";");
        }else if(comando instanceof While){
+          System.out.print("   ");
           System.out.print("while");
           System.out.print("(");
           pExp(((While) comando).exp);
           System.out.print(")");
           System.out.println("{");
           pSeqComandos(((While)comando).comandos);
-          System.out.print("}");
+          System.out.print("   }");
           System.out.println(";");
        }else if(comando instanceof Repeat){
+          System.out.print("   ");
           System.out.print("repeat");
           System.out.println("{");
           pSeqComandos(((Repeat)comando).comandos);
+          System.out.print("   ");
           System.out.print("}");
           System.out.print("until");
           System.out.print("(");
@@ -239,10 +249,12 @@ public class Karloff {
           System.out.print(")");
           System.out.println(";");
        }else if(comando instanceof Return){
+          System.out.print("   ");
           System.out.print("return ");
           pExp(((Return)comando).e);
           System.out.println(";");
        }else if(comando instanceof SystemOutput){
+          System.out.print("   ");
           System.out.print("System.output");
           System.out.print("(");
           pExp(((SystemOutput)comando).e);
